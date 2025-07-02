@@ -7,6 +7,9 @@ type AlertDialogButtonProps = {
     subMsg : string
 }
 
+/*
+This function takes the buttonText, mainMag and subMsg as props in it, this function is just used to show the alert popup.
+*/
 export default function AlertDialogButton({buttonText, mainMsg, subMsg}: AlertDialogButtonProps){
 
     //Used to show or hide the popup by maintaining a boolean value
@@ -17,7 +20,9 @@ export default function AlertDialogButton({buttonText, mainMsg, subMsg}: AlertDi
 
 
 
-    // Lock/unlock scroll when dialog box opens/closes
+/*
+This useEffect is used to lock the scroll when the alert box appears by using overflow hidden.
+*/
     useEffect(() => {
         if (showDialog) {
             document.body.style.overflow = "hidden";
@@ -31,6 +36,9 @@ export default function AlertDialogButton({buttonText, mainMsg, subMsg}: AlertDi
     }, [showDialog]);
 
 
+    /*
+    This components returns a button that is then used to open the alert dialog for the final conformation of any task or process.
+    */
     return(
 
         <>

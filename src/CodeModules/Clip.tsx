@@ -8,16 +8,18 @@ type ClipProps = {
 };
 
 /*
-input, output, computation
+This function takes textToCopy ref as a prop which contains text from a HTML tag and then converts to string and then is used for further process.
 */
-export default function Clip({ textToCopy,  }: ClipProps) {
+export default function Clip({ textToCopy }: ClipProps) {
 
     const [copied, setCopied] = useState(false);
 
     const [tooltipLink, setTooltipLink] = useState<string | undefined>(undefined)
     const [redirect, setRedirect] = useState(false)
 
-    //This function handles the whole redirection that checks if text is a email or phone and then handles the process
+    /*
+    This function handleRedirect converts the ref to a string and then checks the string to verify if it's a phone number or email and accordingly updates the tooltipLink and redirect.
+    */
     const handleRedirect = () => {
 
         if (textToCopy.current) {
@@ -41,14 +43,15 @@ export default function Clip({ textToCopy,  }: ClipProps) {
 
     }
 
+    /*
+    In the function handleCopy the ref is converted to string and then is copied to the clipboard and the tooltip's text is managed with the setTimeout, the setCopied is used to manage the text's state in the tooltip of the copty button.
+    */
     const handleCopy = () => {
 
-        //In the if condition the ref prop is taken and its current value is checked for the initialization of the if block, after the initialization the text is kept in the variable 'text', then it is saved on the clipboard using the writeText() command.
         if (textToCopy.current) {
             const text = textToCopy.current.textContent || "";
             navigator.clipboard.writeText(text);
 
-            //After the copying the copied state is change to true and the tooltip shows the text in it as 'Copied!', then a set timeout is used which then changes the boolean false in 2 sec making the tooltip's text back as 'Copy'
             setCopied(true)
             setTimeout(() => {
                 setCopied(false)
@@ -56,6 +59,9 @@ export default function Clip({ textToCopy,  }: ClipProps) {
         }
     }
 
+    /*
+    This component returns a button in which some text's reference have been passed and the button is used to copy the text or redirect to respective application if the text is an email or phone number.
+    */
     return (
         <div className='relative inline-block group'>
 

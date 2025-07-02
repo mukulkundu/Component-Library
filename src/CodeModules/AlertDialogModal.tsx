@@ -5,8 +5,15 @@ type AlertDialogModalProps = {
   footMsg : string
 };
 
+/*
+This function takes headMsg, footMsg and the closeDialogBox function in it as props, the colseDialogBox function is used to close the alert popup.
+*/
 export default function AlertDialogModal({closeDialogBox, headMsg, footMsg}: AlertDialogModalProps){
 
+
+    /*
+    This components returns the alert dialog which appears when the button is clicked and can be closed by the closeDialogBox function which is in the cancel button and the task to be performed should be placed in the continue button's onClick.
+    */
     return(
 
         <div className="fixed z-50 top-0 left-0 w-[100dvw] h-[100dvh] flex items-center justify-center duration-200 backdrop-blur-md">
