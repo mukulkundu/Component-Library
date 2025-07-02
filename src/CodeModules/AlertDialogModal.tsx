@@ -9,7 +9,7 @@ export default function AlertDialogModal({closeDialogBox, headMsg, footMsg}: Ale
 
     return(
 
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] flex items-center justify-center duration-200 backdrop-blur-md">
+        <div className="fixed z-50 top-0 left-0 w-[100dvw] h-[100dvh] flex items-center justify-center duration-200 backdrop-blur-md">
             <section className="w-120 h-50 bg-black rounded-xl p-4">
                 <div className="text-white p-2 h-[70%]">
                     <p className="text-2xl font-medium">{headMsg}</p>

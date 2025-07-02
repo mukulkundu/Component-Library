@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import plus from '../assets/plus.svg'
 import plusDarkMode from '../assets/plusdarkmode.svg'
 import Clip from '../CodeModules/Clip'
-import ToastPopup from '../CodeModules/ToastPopup'
+// import ToastPopup from '../CodeModules/ToastPopup'
 
 
 export default function Toast() {
@@ -71,16 +71,13 @@ export default function ToastPopup({mainMsg, subMsg}: ToastPopupProps) {
     `
     const usingToastRef = useRef(null)
 
-    const [hello, setHello] = useState(0);
-    console.log('rendering parent');
     
 
 
     return (
         
         <div className="pt-14 ml-24 dark:text-white">
-            <button onClick={()=>{setHello(hello+1)}}>hello</button>
-            <ToastPopup mainMsg={'The action has been failed due to an error'} subMsg={'Please try once again after some time.'}/>
+            {/* <ToastPopup mainMsg={'The action has been failed due to an error'} subMsg={'Please try once again after some time.'}/> */}
             <h1 className="text-4xl font-medium">Toast</h1>
 
             <article className="mt-2 text-sm text-gray-700">

@@ -7,9 +7,12 @@ import moon from '../assets/moon.svg'
 import plus from '../assets/plus.svg'
 import CartCounter from "../CodeModules/CartCounter";
 
-// const componentsWithProperties = [];
 
 export default function Home() {
+
+    // const componentsWithProperties = [
+    //     {comp: <div></div> text: '' link: ''}
+    // ]
 
     //textRef is used in the previewtab of the copy to clipboard component to pass the sample text's ref to the component
     const textref = useRef(null)

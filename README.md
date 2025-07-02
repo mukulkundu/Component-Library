@@ -21,5 +21,5 @@ This project provides self-contained, customizable UI components following best 
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/component-library.git
+git clone https://github.com/mukulkundu/component-library.git
 cd component-library

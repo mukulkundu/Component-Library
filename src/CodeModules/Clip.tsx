@@ -2,8 +2,6 @@ import { useState } from 'react';
 import CopyImage from '../assets/copy.svg'
 import CopyImageDarkMode from '../assets/copy-darkmode.svg'
 
-
-//It defines that what is the type of prop(texttoCopy) that is coming from the page and then is used with clipboard, it is either an HTML element which have text inside it or it is Null.
 type ClipProps = {
     textToCopy: React.RefObject<HTMLElement> | React.RefObject<null>,
     type ?: 'email'|'phone'
@@ -14,10 +12,8 @@ input, output, computation
 */
 export default function Clip({ textToCopy,  }: ClipProps) {
 
-    //This useState is used to change the text of the tooltip used with the copy icon from 'Copy' to 'Copied!' by using a boolean value
     const [copied, setCopied] = useState(false);
 
-    //These are used for the redirection button when hovered on the copy button, if the text is email or phone number a redirect button comes which redirects user to the respective application, tooltiplink is the link which contains the url to redirect and redirect is used to conditionally show the redirect button
     const [tooltipLink, setTooltipLink] = useState<string | undefined>(undefined)
     const [redirect, setRedirect] = useState(false)
 
@@ -30,7 +26,6 @@ export default function Clip({ textToCopy,  }: ClipProps) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^\+?\d{10,15}$/;
 
-            //Regex is used to match the text with required format and on basis of it the required field are setted
             if (emailRegex.test(text)) {
                 setTooltipLink(`mailto:${text}`);
                 setRedirect(true);

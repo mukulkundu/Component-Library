@@ -7,6 +7,11 @@ type ToastPopupProps = {
     subMsg : string,
 }
 
+/*
+This function takes a main message(mainMsg) and a sub message(subMsg) as string in it as props which are then used to show it in the Toast on the screen.
+It uses a useState isVisible which is used to set the popup element as visible or not based on its boolean value.
+Also it uses a setTimeout which changes the value of the isVisible useState to false that enables it to disappear it after 5 sec.
+*/
 function ToastPopup({mainMsg, subMsg}: ToastPopupProps) {
 
     const [isVisible, setIsVisible] = useState(true);
@@ -21,9 +26,12 @@ function ToastPopup({mainMsg, subMsg}: ToastPopupProps) {
         }, 5000);
         return () => clearTimeout(timer)  //clear timeout on unmount
     }, [])
-    console.log('renering component')
 
 
+
+    /*
+    This component displays the toast whenever the value of the useState isVisible is true and disappears when the value is false.
+    */
     return (
 
         <>
