@@ -9,6 +9,7 @@ import AlterDialog from './Components/AlertDialog'
 import ThemeToggler from './Components/ThemeToggler'
 import Toast from './Components/Toast'
 import Counter from './Components/Counter'
+import GenericListViewPage from './Components/GenericListViewPage'
 
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route path='/theme-toggler' element={<ThemeToggler/>}/>
     <Route path='/toast' element={<Toast/>}/>
     <Route path='/counter' element={<Counter/>}/>
+    <Route path='/generic-list-view' element={<GenericListViewPage/>}/>
   </Route>
 ))
 

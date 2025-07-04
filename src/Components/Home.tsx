@@ -91,8 +91,17 @@ export default function Home() {
             </section>
 
 
+            {/* GenericListView component preview tab */}
+            <section className="h-60 rounded-lg bg-[#9fa0c3a5]">
+                <div className="h-[75%] flex items-center justify-center">
+                    
+                </div>
+                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                    <Link className="hover:text-blue-600 font-medium hover:underline" to='/generic-list-view'>Generic List View</Link>
+                </div>
+            </section>
 
-            <section className="h-60 rounded-lg bg-[#9fa0c3a5]"></section>
+            
             <section className="h-60 rounded-lg bg-[#9fa0c3a5]"></section>
             <section className="h-60 rounded-lg bg-[#9fa0c3a5]"></section>
             <section className="h-60 rounded-lg bg-[#9fa0c3a5]"></section>

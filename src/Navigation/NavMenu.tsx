@@ -25,6 +25,10 @@ export default function NavMenu(){
             name: 'Counter',
             slug: 'counter'
         },
+        {
+            name: 'Generic List View',
+            slug: 'generic-list-view'
+        },
     ]
 
 
