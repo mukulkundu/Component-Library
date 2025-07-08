@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import tableOfContents from '../assets/table-of-contents.svg'
+import axios from "axios";
 
 type Post = {
     userId: number,
@@ -26,12 +27,17 @@ export default function GenericListView() {
     const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
-            .then((response) => response.json())
-            .then((data: Post[]) => {
-                setData(data);
-                setFilteredData(data);
-            });
+        const fetchData = async () => {
+            try {
+                const response = await axios.get<Post[]>("https://jsonplaceholder.typicode.com/posts");
+                setData(response.data);
+                setFilteredData(response.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData(); // Call the async function
     }, [])
 
     // console.log(data);
