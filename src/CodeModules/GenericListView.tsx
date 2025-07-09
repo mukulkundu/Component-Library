@@ -2,43 +2,59 @@ import { useEffect, useState } from "react"
 import tableOfContents from '../assets/table-of-contents.svg'
 import axios from "axios";
 
-type Post = {
-    userId: number,
-    id: number,
-    title: string,
-    body: string
-}
+type Movie = {
+    id: number;
+    title: string;
+    overview: string;
+    release_date: string;
+    vote_average: number;
+};
 
 const defaultVisibleColumns = {
-    userId: true,
     id: true,
     title: true,
-    body: true,
+    overview: true,
+    release_date: true,
+    vote_average: true,
 };
+
 
 export default function GenericListView() {
 
-    const [data, setData] = useState<Post[]>([]);
-    const itemsPerPage = 10;
+    const apiKey = import.meta.env.VITE_ACCESS_KEY;
+
+    const [data, setData] = useState<Movie[]>([]);
     const [toggleBtn, setToggleBtn] = useState(false)
     const [page, setPage] = useState(1);
-    const [filteredData, setFilteredData] = useState<Post[]>([]);
+    const [filteredData, setFilteredData] = useState<Movie[]>([]);
     const [visibleColumns, setVisibleColumns] = useState(defaultVisibleColumns);
     const [searchQuery, setSearchQuery] = useState("");
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get<Post[]>("https://jsonplaceholder.typicode.com/posts");
-                setData(response.data);
-                setFilteredData(response.data);
+                const response = await axios.get("https://api.themoviedb.org/3/movie/popular", {
+                    params: {
+                        api_key: apiKey,
+                        page: page,
+                        ...(searchQuery && { query: searchQuery }), // Add query only if search exists
+                    },
+                });
+                const movies: Movie[] = response.data.results;
+                setData(movies);
+                setFilteredData(movies);
+
+                setTotalPages(response.data.total_pages);
+
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching movies:", error);
             }
         };
 
-        fetchData(); // Call the async function
-    }, [])
+        fetchData();
+    }, [page]);
+
 
     // console.log(data);
 
@@ -47,15 +63,16 @@ export default function GenericListView() {
     useEffect(() => {
         const timeout = setTimeout(() => {
             const lower = searchQuery.toLowerCase();
-            const filtered = data.filter(
-                (post) =>
-                    post.title.toLowerCase().includes(lower) ||
-                    post.body.toLowerCase().includes(lower) ||
-                    post.id.toString().includes(lower) ||
-                    post.userId.toString().includes(lower)
+            const filtered = data.filter((movie) =>
+                movie.title.toLowerCase().includes(lower) ||
+                movie.overview.toLowerCase().includes(lower) ||
+                movie.release_date.includes(lower) ||
+                movie.vote_average.toString().includes(lower) ||
+                movie.id.toString().includes(lower)
             );
+
             setFilteredData(filtered);
-            setPage(1);
+            // setPage(1);
         }, 400);
 
         return () => clearTimeout(timeout);
@@ -63,14 +80,14 @@ export default function GenericListView() {
 
 
     // Pagination
-    const paginatedData = filteredData.slice(
-        (page - 1) * itemsPerPage,
-        page * itemsPerPage
-    );
+    // const paginatedData = filteredData.slice(
+    //     (page - 1) * itemsPerPage,
+    //     page * itemsPerPage
+    // );
 
 
     // Toggle column visibility
-    const toggleColumn = (column: keyof Post) => {
+    const toggleColumn = (column: keyof Movie) => {
         setVisibleColumns((prev) => ({
             ...prev,
             [column]: !prev[column],
@@ -78,7 +95,6 @@ export default function GenericListView() {
     };
 
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
     return (
 
@@ -94,7 +110,7 @@ export default function GenericListView() {
                         <img src={tableOfContents} alt="" />
                     </button>
                     <div className={`${toggleBtn ? 'absolute' : 'hidden'} right-0 mt-2 w-52 border border-gray-300 rounded-md bg-white shadow-md z-10 p-2 space-y-2`}>
-                        {(Object.keys(defaultVisibleColumns) as (keyof Post)[]).map(
+                        {(Object.keys(defaultVisibleColumns) as (keyof Movie)[]).map(
                             (col) => (
                                 <label key={col} className="flex items-center gap-2 cursor-pointer">
                                     <input
@@ -116,50 +132,38 @@ export default function GenericListView() {
                 <table className="min-w-full table-auto">
                     <thead className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
                         <tr>
-                            {visibleColumns.userId && <th className="p-3">User ID</th>}
-                            {visibleColumns.id && <th className="p-3">Post ID</th>}
+                            {visibleColumns.id && <th className="p-3">Id</th>}
                             {visibleColumns.title && <th className="p-3">Title</th>}
-                            {visibleColumns.body && <th className="p-3">Body</th>}
+                            {visibleColumns.overview && <th className="p-3">Overview</th>}
+                            {visibleColumns.release_date && <th className="p-3">Release Date</th>}
+                            {visibleColumns.vote_average && <th className="p-3">Rating</th>}
+
                         </tr>
                     </thead>
                     <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
-                        {paginatedData.map((post) => (
-                            <tr key={post.id} className="hover:bg-gray-50">
-                                {visibleColumns.userId && <td className="p-3">{post.userId}</td>}
-                                {visibleColumns.id && <td className="p-3">{post.id}</td>}
-                                {visibleColumns.title && (
-                                    <td className="p-3 whitespace-nowrap">{post.title}</td>
-                                )}
-                                {visibleColumns.body && (
-                                    <td className="p-3 whitespace-pre-wrap">{post.body}</td>
-                                )}
+                        {filteredData.map((movie) => (
+                            <tr key={movie.id}>
+                                {visibleColumns.id && <td className="p-3">{movie.id}</td>}
+                                {visibleColumns.title && <td className="p-3">{movie.title}</td>}
+                                {visibleColumns.overview && <td className="p-3">{movie.overview}</td>}
+                                {visibleColumns.release_date && <td className="p-3">{movie.release_date}</td>}
+                                {visibleColumns.vote_average && <td className="p-3">{movie.vote_average}</td>}
                             </tr>
                         ))}
+
                     </tbody>
                 </table>
             </div>
 
-            <div className="flex justify-between items-center py-2 px-1 text-sm text-gray-600 w-full">
+            <div className="flex justify-between items-center py-2 px-2 text-sm text-gray-600 w-full">
                 <span>
-                    Showing {(page - 1) * itemsPerPage + 1} to{" "}
-                    {Math.min(page * itemsPerPage, filteredData.length)} of{" "}
-                    {filteredData.length} results
+                    Page {page} of {totalPages}
                 </span>
+
                 <div className="flex gap-2">
-                    <button
-                        className="px-3 py-1 rounded-md border bg-white hover:bg-gray-100 cursor-pointer"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                    >
-                        Prev
-                    </button>
-                    <button
-                        className="px-3 py-1 rounded-md border bg-white hover:bg-gray-100 cursor-pointer"
-                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                        disabled={page === totalPages}
-                    >
-                        Next
-                    </button>
+                    <button className="py-1 px-2 border rounded cursor-pointer hover:bg-gray-300" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>Prev</button>
+                    <button className="py-1 px-2 border rounded cursor-pointer hover:bg-gray-300" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next</button>
+
                 </div>
             </div>
         </div>
