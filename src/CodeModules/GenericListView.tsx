@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import tableOfContents from '../assets/table-of-contents.svg'
-import axios from "axios";
+import { TmdbService } from "../services/tmdbService";
 
 type Movie = {
     id: number;
@@ -21,8 +21,6 @@ const defaultVisibleColumns = {
 
 export default function GenericListView() {
 
-    const apiKey = import.meta.env.VITE_ACCESS_KEY;
-
     const [data, setData] = useState<Movie[]>([]);
     const [toggleBtn, setToggleBtn] = useState(false)
     const [page, setPage] = useState(1);
@@ -33,27 +31,24 @@ export default function GenericListView() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axios.get("https://api.themoviedb.org/3/movie/popular", {
-                    params: {
-                        api_key: apiKey,
-                        page: page,
-                        ...(searchQuery && { query: searchQuery }), // Add query only if search exists
-                    },
-                });
-                const movies: Movie[] = response.data.results;
-                setData(movies);
-                setFilteredData(movies);
 
-                setTotalPages(response.data.total_pages);
-
-            } catch (error) {
-                console.error("Error fetching movies:", error);
+            const response = await TmdbService.fetchMovieData(page, searchQuery);
+            if (!response) {
+                console.warn("No response from TMDB");
+                return;
+                //div
             }
+            const movies: Movie[] = response.data.results;
+            setData(movies);
+            setFilteredData(movies);
+
+            setTotalPages(response.data.total_pages);
+
+
         };
 
         fetchData();
-    }, [page]);
+    }, [page, searchQuery]);
 
 
     // console.log(data);
@@ -72,7 +67,7 @@ export default function GenericListView() {
             );
 
             setFilteredData(filtered);
-            // setPage(1);
+
         }, 400);
 
         return () => clearTimeout(timeout);
