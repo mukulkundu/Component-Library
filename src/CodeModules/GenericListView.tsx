@@ -1,151 +1,114 @@
-import { useEffect, useState } from "react"
-import tableOfContents from '../assets/table-of-contents.svg'
-import { TmdbService } from "../services/tmdbService";
+import { useEffect, useState } from "react";
+import tableOfContents from "../assets/table-of-contents.svg";
 
-type Movie = {
-    id: number;
-    title: string;
-    overview: string;
-    release_date: string;
-    vote_average: number;
+export type Column<T> = {
+    key: keyof T;
+    label: string;
+    visible: boolean;
 };
 
-const defaultVisibleColumns = {
-    id: true,
-    title: true,
-    overview: true,
-    release_date: true,
-    vote_average: true,
+type Props<T> = {
+    data: T[];
+    columns: Column<T>[];
+    onSearch: (query: string) => void;
+    onPageChange: (page: number) => void;
+    page: number;
+    totalPages: number;
 };
 
-
-export default function GenericListView() {
-
-    const [data, setData] = useState<Movie[]>([]);
-    const [toggleBtn, setToggleBtn] = useState(false)
-    const [page, setPage] = useState(1);
-    const [filteredData, setFilteredData] = useState<Movie[]>([]);
-    const [visibleColumns, setVisibleColumns] = useState(defaultVisibleColumns);
+export default function GenericListView<T extends { [key: string]: any }>({
+    data,
+    columns,
+    onSearch,
+    onPageChange,
+    page,
+    totalPages,
+}: Props<T>) {
+    const [toggleBtn, setToggleBtn] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [totalPages, setTotalPages] = useState(1);
+    const [visibleCols, setVisibleCols] = useState(columns);
 
-    useEffect(() => {
-        const fetchData = async () => {
-
-            const response = await TmdbService.fetchMovieData(page, searchQuery);
-            if (!response) {
-                console.warn("No response from TMDB");
-                return;
-                //div
-            }
-            const movies: Movie[] = response.data.results;
-            setData(movies);
-            setFilteredData(movies);
-
-            setTotalPages(response.data.total_pages);
-
-
-        };
-
-        fetchData();
-    }, [page, searchQuery]);
-
-
-    // console.log(data);
-
-
-    // Debounced search
     useEffect(() => {
         const timeout = setTimeout(() => {
-            const lower = searchQuery.toLowerCase();
-            const filtered = data.filter((movie) =>
-                movie.title.toLowerCase().includes(lower) ||
-                movie.overview.toLowerCase().includes(lower) ||
-                movie.release_date.includes(lower) ||
-                movie.vote_average.toString().includes(lower) ||
-                movie.id.toString().includes(lower)
-            );
-
-            setFilteredData(filtered);
-
+            onSearch(searchQuery);
         }, 400);
 
         return () => clearTimeout(timeout);
-    }, [searchQuery, data]);
+    }, [searchQuery]);
 
-
-    // Pagination
-    // const paginatedData = filteredData.slice(
-    //     (page - 1) * itemsPerPage,
-    //     page * itemsPerPage
-    // );
-
-
-    // Toggle column visibility
-    const toggleColumn = (column: keyof Movie) => {
-        setVisibleColumns((prev) => ({
-            ...prev,
-            [column]: !prev[column],
-        }));
+    const toggleColumn = (key: keyof T) => {
+        setVisibleCols((prev) =>
+            prev.map((col) =>
+                col.key === key ? { ...col, visible: !col.visible } : col
+            )
+        );
     };
 
-
-
     return (
-
         <div className="flex flex-col items-center justify-center m-4 border rounded-md border-gray-400">
             <div className="flex items-center justify-between w-full py-2 px-1">
-                <input type="text" placeholder="Search item.." className="border px-4 py-2 rounded-md w-80 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)} />
+                <input
+                    type="text"
+                    placeholder="Search item..."
+                    className="border px-4 py-2 rounded-md w-80 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
 
                 <div className="relative">
-                    <button className="px-3 py-2 cursor-pointer hover:bg-gray-300 rounded-xl" onClick={() => {
-                        setToggleBtn(!toggleBtn);
-                    }}>
+                    <button
+                        className="px-3 py-2 cursor-pointer hover:bg-gray-300 rounded-xl"
+                        onClick={() => setToggleBtn(!toggleBtn)}
+                    >
                         <img src={tableOfContents} alt="" />
                     </button>
-                    <div className={`${toggleBtn ? 'absolute' : 'hidden'} right-0 mt-2 w-52 border border-gray-300 rounded-md bg-white shadow-md z-10 p-2 space-y-2`}>
-                        {(Object.keys(defaultVisibleColumns) as (keyof Movie)[]).map(
-                            (col) => (
-                                <label key={col} className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns[col]}
-                                        onChange={() => toggleColumn(col)}
-                                        className="cursor-pointer"
-                                    />
-                                    <span className="capitalize">{col}</span>
-                                </label>
-                            )
-                        )}
+                    <div
+                        className={`${toggleBtn ? "absolute" : "hidden"
+                            } right-0 mt-2 w-52 border border-gray-300 rounded-md bg-white shadow-md z-10 p-2 space-y-2`}
+                    >
+                        {visibleCols.map((col) => (
+                            <label
+                                key={String(col.key)}
+                                className="flex items-center gap-2 cursor-pointer"
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={col.visible}
+                                    onChange={() => toggleColumn(col.key)}
+                                    className="cursor-pointer"
+                                />
+                                <span className="capitalize">{col.label}</span>
+                            </label>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* Table */}
             <div className="overflow-x-auto border-b border-t w-full border-gray-400">
                 <table className="min-w-full table-auto">
                     <thead className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
                         <tr>
-                            {visibleColumns.id && <th className="p-3">Id</th>}
-                            {visibleColumns.title && <th className="p-3">Title</th>}
-                            {visibleColumns.overview && <th className="p-3">Overview</th>}
-                            {visibleColumns.release_date && <th className="p-3">Release Date</th>}
-                            {visibleColumns.vote_average && <th className="p-3">Rating</th>}
-
+                            {visibleCols
+                                .filter((col) => col.visible)
+                                .map((col) => (
+                                    <th key={String(col.key)} className="p-3">
+                                        {col.label}
+                                    </th>
+                                ))}
                         </tr>
                     </thead>
                     <tbody className="text-sm text-gray-700 divide-y divide-gray-200">
-                        {filteredData.map((movie) => (
-                            <tr key={movie.id}>
-                                {visibleColumns.id && <td className="p-3">{movie.id}</td>}
-                                {visibleColumns.title && <td className="p-3">{movie.title}</td>}
-                                {visibleColumns.overview && <td className="p-3">{movie.overview}</td>}
-                                {visibleColumns.release_date && <td className="p-3">{movie.release_date}</td>}
-                                {visibleColumns.vote_average && <td className="p-3">{movie.vote_average}</td>}
+                        {data.map((item, index) => (
+                            <tr key={index}>
+                                {visibleCols
+                                    .filter((col) => col.visible)
+                                    .map((col) => (
+                                        <td key={String(col.key)} className="p-3">
+                                            {item[col.key]}
+                                        </td>
+                                    ))}
                             </tr>
                         ))}
-
                     </tbody>
                 </table>
             </div>
@@ -156,11 +119,22 @@ export default function GenericListView() {
                 </span>
 
                 <div className="flex gap-2">
-                    <button className="py-1 px-2 border rounded cursor-pointer hover:bg-gray-300" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>Prev</button>
-                    <button className="py-1 px-2 border rounded cursor-pointer hover:bg-gray-300" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next</button>
-
+                    <button
+                        className="py-1 px-2 border rounded cursor-pointer hover:bg-gray-300"
+                        onClick={() => onPageChange(page - 1)}
+                        disabled={page === 1}
+                    >
+                        Prev
+                    </button>
+                    <button
+                        className="py-1 px-2 border rounded cursor-pointer hover:bg-gray-300"
+                        onClick={() => onPageChange(page + 1)}
+                        disabled={page === totalPages}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
         </div>
-    )
+    );
 }

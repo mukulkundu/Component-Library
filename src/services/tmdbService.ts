@@ -10,7 +10,7 @@ export const TmdbService = {
                     params: {
                         api_key: apiKey,
                         page: page,
-                        ...(searchQuery && { query: searchQuery }), // Add query only if search exists
+                        ...(searchQuery && { query: searchQuery }),
                     },
                 });
                 return response;
