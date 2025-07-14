@@ -23,15 +23,15 @@ export default function Home() {
     }
 
     return (
-        <div className="grid-cols-3 grid gap-12 mx-16 pt-18">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-12 mx-4 sm:mx-8 lg:mx-16 pt-6 sm:pt-12 lg:pt-18">
 
             {/* copy to clipboard component preview tab */}
             <section className="h-60 rounded-lg bg-[#9fa0c3a5]">
                 <div className="h-[75%] flex flex-col justify-center items-center">
-                    <p className="text-lg py-4" ref={textref}>Copy the text from screen</p>
+                    <p className="text-base sm:text-lg py-4" ref={textref}>Copy the text from screen</p>
                     <Clip textToCopy={textref} />
                 </div>
-                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                <div className="h-[25%] border-t-1 border-gray-400 text-lg sm:text-xl flex items-center justify-center">
                     <Link className="hover:text-blue-600 font-medium hover:underline" to='/copy-to-clipboard'>Copy to Clipboard</Link>
                 </div>
             </section>
@@ -42,7 +42,7 @@ export default function Home() {
                 <figure className="h-[75%] flex items-center justify-center">
                     <img src={DialogImage} alt="" className="h-[80%] rounded-xl" />
                 </figure>
-                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                <div className="h-[25%] border-t-1 border-gray-400 text-lg sm:text-xl flex items-center justify-center">
                     <Link className="hover:text-blue-600 font-medium hover:underline" to='/alert-dialog'>Alert Dialog</Link>
                 </div>
             </section>
@@ -52,10 +52,10 @@ export default function Home() {
             <section className="h-60 rounded-lg bg-[#9fa0c3a5]">
                 <div className="h-[75%] flex items-center justify-center">
                     <button onClick={toggleDarkModeUI} className="cursor-pointer hover:bg-gray-400 p-2 rounded-2xl">
-                        {isDarkMode ? <img src={sun} alt="" className="w-7" /> : <img src={moon} alt="" className="w-7" />}
+                        {isDarkMode ? <img src={sun} alt="" className="w-6 sm:w-7" /> : <img src={moon} alt="" className="w-6 sm:w-7" />}
                     </button>
                 </div>
-                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                <div className="h-[25%] border-t-1 border-gray-400 text-lg sm:text-xl flex items-center justify-center">
                     <Link className="hover:text-blue-600 font-medium hover:underline" to='/theme-toggler'>Theme Toggler</Link>
                 </div>
             </section>
@@ -65,17 +65,17 @@ export default function Home() {
                 <div className="h-[75%] flex items-center justify-center px-2">
                     <div className='relative overflow-hidden py-2 px-4 flex rounded-2xl border-1 border-black justify-center items-center max-w-fit backdrop-blur-lg'>
                         <div>
-                            <p className='text-sm font-medium'>The action has been failed due to an error</p>
+                            <p className='text-xs sm:text-sm font-medium'>The action has been failed due to an error</p>
                             <p className='text-xs'>Please try once again after some time.</p>
                         </div>
-                        <button><img src={plus} alt="" className='rotate-45 cursor-pointer ml-8 w-7' /></button>
+                        <button><img src={plus} alt="" className='rotate-45 cursor-pointer ml-4 sm:ml-8 w-6 sm:w-7' /></button>
                         <div
                             className="absolute bottom-0 left-0 h-1 w-full bg-black"
                         />
 
                     </div>
                 </div>
-                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                <div className="h-[25%] border-t-1 border-gray-400 text-lg sm:text-xl flex items-center justify-center">
                     <Link className="hover:text-blue-600 font-medium hover:underline" to='/toast'>Toast</Link>
                 </div>
             </section>
@@ -85,7 +85,7 @@ export default function Home() {
                 <div className="h-[75%] flex items-center justify-center">
                     <CartCounter currentCount={0}/>
                 </div>
-                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                <div className="h-[25%] border-t-1 border-gray-400 text-lg sm:text-xl flex items-center justify-center">
                     <Link className="hover:text-blue-600 font-medium hover:underline" to='/counter'>Counter</Link>
                 </div>
             </section>
@@ -96,7 +96,7 @@ export default function Home() {
                 <div className="h-[75%] flex items-center justify-center">
                     
                 </div>
-                <div className="h-[25%] border-t-1 border-gray-400 text-xl flex items-center justify-center">
+                <div className="h-[25%] border-t-1 border-gray-400 text-lg sm:text-xl flex items-center justify-center">
                     <Link className="hover:text-blue-600 font-medium hover:underline" to='/generic-list-view'>Generic List View</Link>
                 </div>
             </section>
