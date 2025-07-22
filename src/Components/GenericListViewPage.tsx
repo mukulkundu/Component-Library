@@ -6,12 +6,20 @@ import { TmdbService } from "../services/tmdbService";
 type Movie = {
     id: number;
     title: string;
-    overview: string;
-    release_date: string;
+    vote_count: number;
     vote_average: number;
+    release_date: string;
+    adult: boolean;
 };
 
 export default function GenericListViewPage() {
+
+
+    const adultTransformer = (value: boolean): string => {
+        return value ? "Adult" : "Not Adult";
+    };
+
+
     const [movies, setMovies] = useState<Movie[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -20,9 +28,10 @@ export default function GenericListViewPage() {
     const columns: Column<Movie>[] = [
         { key: "id", label: "ID", visible: true },
         { key: "title", label: "Title", visible: true },
-        { key: "overview", label: "Overview", visible: true },
-        { key: "release_date", label: "Release Date", visible: true },
+        { key: "vote_count", label: "Vote Count", visible: true },
         { key: "vote_average", label: "Rating", visible: true },
+        { key: "release_date", label: "Release Date", visible: true },
+        { key: "adult", label: "Content Rating", visible: true, transformer: adultTransformer },
     ];
 
     const fetchMovies = async (query: string = "", pageNo: number = 1) => {

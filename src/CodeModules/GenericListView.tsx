@@ -5,6 +5,7 @@ export type Column<T> = {
     key: keyof T;
     label: string;
     visible: boolean;
+    transformer?: (value: any) => string;
 };
 
 type Props<T> = {
@@ -104,7 +105,7 @@ export default function GenericListView<T extends { [key: string]: any }>({
                                     .filter((col) => col.visible)
                                     .map((col) => (
                                         <td key={String(col.key)} className="p-3">
-                                            {item[col.key]}
+                                            {col.transformer ? col.transformer(item[col.key]) : item[col.key]}
                                         </td>
                                     ))}
                             </tr>
